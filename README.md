@@ -29,6 +29,8 @@ public class UserDao {
 
 ## Intégration de JPA
 
+*Utilisée dans l'application*
+
 Pour une application utilisant JPA, il est possible d’injecter un ``EntityManager`` dans un repository grâce à l’annotation ``@Autowired`` ou ``@Inject`` ou même ``@PersistenceContext``.
 
 > [!NOTE]
@@ -90,6 +92,8 @@ spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MySQL5Dialect
 https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#data-properties
 
 ## Accès aux données avec JDBC
+
+*Non utilisée dans l'application*
 
 Spring Data Access fournit la classe ``JdbcTemplate`` pour encapsuler les appels ``JDBC``. Cette classe est simplement une classe utilitaire qui réalise :
 
@@ -238,11 +242,12 @@ Spring Boot est un projet conçu pour simplifier considérablement la configurat
 </dependency>
 ```
 
-```xml
-```
+## Uniformité de la hiérarchie des exceptions
 
-```java
-```
+Un apport du module Spring Data Access est d’uniformiser la hiérarchie des exceptions. En effet, l’API JDBC utilise des exceptions héritant de ``SQLException`` qui est une checked exception. JPA utilise des unechecked exceptions héritant de ``PersistenceException``. D’autres bibliothèques ou frameworks proposent à leur tour leur propre hiérarchie d’exceptions.
 
-```java
-```
+Pour simplifier la gestion des exceptions, Spring Data Access propose une hiérarchie unique d’exceptions pour toutes ces technologies afin de simplifier la gestion des erreurs pour les applications. Les exceptions émises par les bibliothèques sous-jacentes sont récupérées et encapsulées dans des types d’exception définis par Spring Data Access.
+
+À la base de cette hiérarchie, la classe ``DataAccessException`` est une unchecked exception (elle hérite de ``RuntimeException``).
+
+Pour une application Spring Boot, vous pouvez contrôler l’activation ou non de l’uniformisation des exceptions avec la propriété ``spring.dao.exceptiontranslation``.enabled dans le fichier application.properties. Cette propriété vaut ``true`` par défaut.
